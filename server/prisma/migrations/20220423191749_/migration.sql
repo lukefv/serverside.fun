@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE "Games" ALTER COLUMN "gameId" SET DATA TYPE TEXT;
-
--- AlterTable
-ALTER TABLE "Scripts" ALTER COLUMN "gameId" SET DATA TYPE TEXT;

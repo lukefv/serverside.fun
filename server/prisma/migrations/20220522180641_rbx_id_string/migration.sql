@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Buyers" ALTER COLUMN "robloxId" SET DATA TYPE TEXT;
