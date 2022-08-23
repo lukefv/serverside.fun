@@ -1,0 +1,21 @@
+{
+  "name": "johndoe-repo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start:full": "concurrently \"yarn workspace server start\" \"yarn workspace client start\"",
+    "build": "next build",
+    "start:prod": "NODE_ENV=production node -r esm ./server/src/index.ts"
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "devDependencies": {
+    "concurrently": "^7.1.0"
+  },
+  "dependencies": {
+    "@tailwindcss/line-clamp": "^0.4.0"
+  }
+}

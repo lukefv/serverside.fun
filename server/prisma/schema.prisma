@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id             Int      @id @default(autoincrement())
+  username       String   
+  discordId      String   @unique
+  profilePicture String
+  permission     Int      @default(1) // 1 = user, 2 = admin/staff, 3 = owner
+  createdAt      DateTime @default(now())
+
+  buyer Buyers?
+  trial Trials?
+}
+
+model Activity {
+  id            Int      @id @default(autoincrement())
+  ipAddress    String?
+  action      String?
+  status     String
+  userId      Int
+  createdAt   DateTime @default(now())
+}
+
+model Trials {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  name      String
+  expiresAt DateTime
+  startedAt DateTime @default(now())
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_1979")
+}
+
+model News {
+  id        Int      @id @default(autoincrement())
+  author   String
+  title   String     
+  content  String
+  imageURL String
+  createdAt DateTime @default(now())
+}
+
+model GameSecurity {
+  id        Int      @id @default(autoincrement())
+  gameId   Int
+  createdAt DateTime @default(now())
+}
+
+model Buyers {
+  id                 Int      @id @default(autoincrement())
+  type WhitelistType @default(NORMAL)
+  disabled           Boolean  @default(false)
+  purchaseIdentifier String  
+  warningCount       Int      @default(0)
+  paymentMethod      String   @default("")
+  robloxId           String?      @unique
+  robloxUsername     String?      @unique
+  createdAt          DateTime @default(now())
+  lastUpdated        DateTime? 
+  loggedScripts LoggedScripts[]
+
+
+  // relate to user
+  userId Int   @unique
+  user   Users @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_27")
+  @@index([userId], map: "fdg34")
+}
+
+model PendingScripts {
+  id        Int      @id @default(autoincrement())
+  robloxId String
+  script  String
+  createdAt DateTime @default(now())
+}
+
+model LoggedScripts {
+  id       String @id @default(cuid())
+  robloxId String
+  robloxUsername   String @default("")
+  script   String @default("")
+  gameId   String
+  placeId   String @default("UNKNOWN")
+  buyerId  Int
+  userId Int @default(0)
+
+  buyer     Buyers   @relation(fields: [buyerId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_342")
+  createdAt DateTime @default(now())
+}
+
+model PublicScripts {
+ id        String   @id @default(cuid())
+  script    String   @default("")
+  description    String   @default("")
+  name     String   @default("")
+  thumbnailImage String @default("")
+  createdAt DateTime @default(now())
+  posterId Int
+}
+
+
+model SnitchLogs {
+ id        String   @id @default(cuid())
+  discordName     String   @default("")
+  userAgent     String   @default("")
+  ip     String   @default("")
+  discordId     String   @default("")
+  thumbnailImage     String   @default("")
+  createdAt DateTime @default(now())
+  posterId Int
+}
+
+model PrivateScripts {
+  id       String   @id @default(cuid())
+  name     String   @default("")
+  description    String   @default("")
+  script    String   @default("")
+  thumbnailImage String @default("")
+  createdAt DateTime @default(now())
+  posterId String
+}
+model Games {
+  id           Int      @id @default(autoincrement())
+  gameId       String   @unique
+  placeId      String   @unique
+  description  String   @default("")
+  jobId        String   @unique
+  playerCount  Int      @default(0)
+  thumbnailUrl String
+  name         String
+  cacheExpires DateTime @default(now())
+  createdAt    DateTime @default(now())
+}
+
+enum WhitelistType {
+    NORMAL
+    PREMIUM
+  }
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt   DateTime
+}
